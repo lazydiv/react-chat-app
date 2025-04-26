@@ -1,25 +1,24 @@
 import express from "express";
 import {
+  signup,
   login,
   logout,
-  signup,
-  updateProfile,
   refreshToken,
+  updateProfile,
+  checkAuth,
 } from "../controllers/auth.controller";
-// import { protectRoute } from "../middleware/auth.middleware.js";
+import { protect } from "../middleware/auth.middleware"; // Assuming you have a protect middleware
 
 const router = express.Router();
 
+// Public routes
 router.post("/signup", signup);
 router.post("/login", login);
-router.post("/logout", logout);
 router.post("/refresh-token", refreshToken);
 
-router.patch("/update-profile", updateProfile);
-//
-router.get("/check", (req, res) => {
-  res.status(200).json({ message: "Check auth" });
-});
-// router.get("/check", protectRoute, checkAuth);
+// Protected routes
+router.post("/logout", protect, logout);
+router.put("/profile", protect, updateProfile);
+router.get("/check-auth", protect, checkAuth);
 
 export default router;

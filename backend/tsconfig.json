@@ -1,12 +1,23 @@
 {
   "compilerOptions": {
-    "module": "CommonJS", // Use CommonJS for modules (required for Express)
-    "target": "ES2020", // Modern JS features
-    "outDir": "./dist", // Output compiled JS in the "dist" folder
-    "rootDir": "./src", // Keep TS source in the "src" folder
-    "esModuleInterop": true, // Allow default imports like 'import express from "express"'
-    "skipLibCheck": true, // Skip type checking of declaration files
+    "target": "ES2020",
+    "module": "CommonJS",
+    "rootDir": "./src",
+    "outDir": "./dist",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "strict": true // Enable strict type checking
-  }
+    "moduleResolution": "node",
+    "types": [
+      "node",
+      "express"
+    ]
+  },
+  "include": [
+    "src"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }
