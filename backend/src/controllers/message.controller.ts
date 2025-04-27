@@ -3,6 +3,7 @@ import { AuthRequest } from "../types";
 import Message from "../models/message.model";
 import cloudinary from "../lib/cloudinary";
 import User from "../models/user.model";
+import { getReceiverSocketId, io } from "../lib/socket";
 
 export const sendMessage = async (req: AuthRequest, res: Response) => {
   const { text, image } = req.body;
@@ -28,6 +29,10 @@ export const sendMessage = async (req: AuthRequest, res: Response) => {
       senderId,
       receiverId,
     });
+    const receiverSocketId = getReceiverSocketId(receiverId);
+    if (receiverSocketId) {
+      io.to(receiverSocketId).emit("newMessage", newMessage);
+    }
     const savedMessage = await newMessage.save();
     res.status(201).json(savedMessage);
   } catch (error) {
@@ -55,8 +60,10 @@ export const getMessages = async (req: AuthRequest, res: Response) => {
 
 export const getUsers = async (req: AuthRequest, res: Response) => {
   try {
-    const { id: userId } = req.user;
-    const users = await User.find({ _id: { $ne: userId } }).select("-password");
+    const { id: userId } = req.user._id;
+    console.log(userId);
+    const users = await User.find({});
+    console.log(users);
     res.status(200).json(users);
   } catch (error) {
     console.error("Error fetching users:", error);

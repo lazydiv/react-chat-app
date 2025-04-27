@@ -1,17 +1,17 @@
-import express, { Application } from "express";
+import express from "express";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import authRoutes from "./routes/auth.route";
-import { connectDB } from "./lib/db"; // Assuming you have a MongoDB connection file
+import messageRoutes from "./routes/message.route";
+import { connectDB } from "./lib/db";
 import cors from "cors";
+
+import { app, server } from "./lib/socket";
+import path from "path";
 
 dotenv.config();
 
-const app: Application = express();
 const PORT = process.env.PORT || 5000;
-
-// Connect to database
-connectDB();
 
 // Middlewares
 app.use(express.json());
@@ -26,15 +26,26 @@ app.use(
 
 // Routes
 app.use("/api/auth", authRoutes);
-
+app.use("/api/messages", messageRoutes);
 // Default route
 app.get("/", (_req, res) => {
   res.send("API is running...");
 });
 
-// Error handling middleware (optional)
-// app.use(errorHandler);
+if (process.env.NODE_ENV === "production") {
+  // Serve static files from the frontend build
+  app.use(express.static(path.join(__dirname, "../frontend/dist")));
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  // Catch-all route to serve the React app for SPA routing
+  app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "../frontend", "dist", "index.html"));
+  });
+} else {
+  // You can also add a fallback for dev mode if you like.
+  // For example, serve frontend from a dev server or not at all.
+}
+
+server.listen(PORT, () => {
+  console.log("server is running on PORT:" + PORT);
+  connectDB();
 });
