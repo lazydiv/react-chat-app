@@ -4,7 +4,6 @@ import cookieParser from "cookie-parser";
 import authRoutes from "./routes/auth.route";
 import { connectDB } from "./lib/db"; // Assuming you have a MongoDB connection file
 import cors from "cors";
-import path from "path";
 
 dotenv.config();
 
