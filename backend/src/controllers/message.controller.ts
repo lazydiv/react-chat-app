@@ -60,10 +60,11 @@ export const getMessages = async (req: AuthRequest, res: Response) => {
 
 export const getUsers = async (req: AuthRequest, res: Response) => {
   try {
-    const { id: userId } = req.user._id;
+    const userId = req.user._id;
     console.log(userId);
-    const users = await User.find({});
-    console.log(users);
+    const users = await User.find({
+      _id: { $ne: userId },
+    });
     res.status(200).json(users);
   } catch (error) {
     console.error("Error fetching users:", error);

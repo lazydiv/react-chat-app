@@ -129,13 +129,13 @@ export const refreshToken = async (req: Request, res: Response) => {
 
 export const updateProfile = async (req: AuthRequest, res: Response) => {
   try {
-    const { profilePic } = req.body;
+    const { image } = req.body;
     const userId = req.user._id;
-    if (!userId || !profilePic) {
+    if (!userId || !image) {
       res.status(401).json({ message: "Invalid" });
       return;
     }
-    const uploadedImage = await cloudinary.uploader.upload(profilePic);
+    const uploadedImage = await cloudinary.uploader.upload(image);
     const updatedUser = await User.findByIdAndUpdate(
       userId,
       { image: uploadedImage.secure_url },
